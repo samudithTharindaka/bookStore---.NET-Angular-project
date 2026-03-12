@@ -1,0 +1,172 @@
+<div class="app-container">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">
+        <i class="fas fa-book-open"></i>
+        <span>BookStore</span>
+      </div>
+      <div class="header-stats">
+        <div class="stat">
+          <i class="fas fa-layer-group"></i>
+          <span>{{ books.length }} Books</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <!-- Error Message -->
+    <div class="alert alert-error" *ngIf="error">
+      <i class="fas fa-exclamation-circle"></i>
+      <span>{{ error }}</span>
+      <button class="alert-close" (click)="error = ''">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Add New Book Card -->
+    <div class="card add-book-card">
+      <div class="card-header">
+        <i class="fas fa-plus-circle"></i>
+        <h2>Add New Book</h2>
+      </div>
+      <div class="card-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label><i class="fas fa-heading"></i> Title</label>
+            <input 
+              type="text" 
+              placeholder="Enter book title"
+              [(ngModel)]="newBook.title"
+            />
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-user-pen"></i> Author</label>
+            <input 
+              type="text" 
+              placeholder="Enter author name"
+              [(ngModel)]="newBook.author"
+            />
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-calendar"></i> Year</label>
+            <input 
+              type="number" 
+              placeholder="Publication year"
+              [(ngModel)]="newBook.year"
+            />
+          </div>
+          <div class="form-group form-action">
+            <button class="btn btn-primary" (click)="addBook()">
+              <i class="fas fa-plus"></i>
+              Add Book
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="loading">
+      <div class="spinner"></div>
+      <p>Loading books...</p>
+    </div>
+
+    <!-- Books Table Card -->
+    <div class="card books-card" *ngIf="!loading">
+      <div class="card-header">
+        <i class="fas fa-list"></i>
+        <h2>Books Collection</h2>
+        <button class="btn btn-icon" (click)="loadBooks()" title="Refresh">
+          <i class="fas fa-sync-alt"></i>
+        </button>
+      </div>
+      <div class="card-body">
+        <!-- Empty State -->
+        <div class="empty-state" *ngIf="books.length === 0">
+          <i class="fas fa-inbox"></i>
+          <h3>No Books Found</h3>
+          <p>Start by adding your first book above!</p>
+        </div>
+
+        <!-- Books Table -->
+        <div class="table-container" *ngIf="books.length > 0">
+          <table>
+            <thead>
+              <tr>
+                <th class="th-id">#</th>
+                <th class="th-title">Title</th>
+                <th class="th-author">Author</th>
+                <th class="th-year">Year</th>
+                <th class="th-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let book of books" [class.editing]="editingBook?.id === book.id">
+                <!-- View Mode -->
+                <ng-container *ngIf="editingBook?.id !== book.id">
+                  <td class="td-id">
+                    <span class="id-badge">{{ book.id }}</span>
+                  </td>
+                  <td class="td-title">
+                    <i class="fas fa-book"></i>
+                    {{ book.title }}
+                  </td>
+                  <td class="td-author">{{ book.author }}</td>
+                  <td class="td-year">
+                    <span class="year-badge">{{ book.year }}</span>
+                  </td>
+                  <td class="td-actions">
+                    <button class="btn btn-edit" (click)="startEdit(book)" title="Edit">
+                      <i class="fas fa-pen"></i>
+                    </button>
+                    <button class="btn btn-delete" (click)="deleteBook(book.id)" title="Delete">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                </ng-container>
+
+                <!-- Edit Mode -->
+                <ng-container *ngIf="editingBook?.id === book.id && editingBook">
+                  <td class="td-id">
+                    <span class="id-badge">{{ book.id }}</span>
+                  </td>
+                  <td>
+                    <input type="text" [(ngModel)]="editingBook!.title" class="edit-input" />
+                  </td>
+                  <td>
+                    <input type="text" [(ngModel)]="editingBook!.author" class="edit-input" />
+                  </td>
+                  <td>
+                    <input type="number" [(ngModel)]="editingBook!.year" class="edit-input edit-input-year" />
+                  </td>
+                  <td class="td-actions">
+                    <button class="btn btn-save" (click)="saveEdit()" title="Save">
+                      <i class="fas fa-check"></i>
+                    </button>
+                    <button class="btn btn-cancel" (click)="cancelEdit()" title="Cancel">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </td>
+                </ng-container>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>
+      <i class="fas fa-code"></i>
+      Built with Angular & .NET
+      <span class="divider">|</span>
+      <a href="http://localhost:5070/scalar/v1" target="_blank">
+        <i class="fas fa-external-link-alt"></i> API Docs
+      </a>
+    </p>
+  </footer>
+</div>
